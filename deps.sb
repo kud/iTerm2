@@ -16,3 +16,5 @@
 (allow file* (subpath "/usr/local/bin/pkg-config"))
 (allow file* (subpath "/opt/homebrew/Cellar/pkgconf/"))
 (allow file* (subpath "/usr/local/Cellar/pkgconf/"))
+(allow file* (subpath "/usr/local/lib/pkgconfig/"))
+(allow file* (subpath "/usr/local/share/pkgconfig/"))
