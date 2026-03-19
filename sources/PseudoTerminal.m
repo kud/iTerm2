@@ -432,6 +432,8 @@ typedef NS_ENUM(int, iTermShouldHaveTitleSeparator) {
     iTermIdempotentOperationJoiner *_rightExtraJoiner;
     BOOL _excursionPrevented;
 
+    NSMutableArray<iTermTabGroup *> *_mutableTabGroups;
+
 }
 
 @synthesize scope = _scope;
@@ -457,8 +459,13 @@ typedef NS_ENUM(int, iTermShouldHaveTitleSeparator) {
     if (self) {
         _automaticallySelectNewTabs = YES;
         self.autoCommandHistorySessionGuid = nil;
+        _mutableTabGroups = [[NSMutableArray alloc] init];
     }
     return self;
+}
+
+- (NSMutableArray *)mutableTabGroups {
+    return _mutableTabGroups;
 }
 
 - (instancetype)initWithSmartLayout:(BOOL)smartLayout
@@ -1098,6 +1105,7 @@ ITERM_WEAKLY_REFERENCEABLE
     [_fullScreenEnteredSeal release];
     [_windowSizeHelper release];
     [_titlebarAccessoryNanny release];
+    [_mutableTabGroups release];
 
     [super dealloc];
 }

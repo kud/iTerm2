@@ -13,6 +13,7 @@ import Cocoa
         static let name = "name"
         static let color = "color"
         static let memberTabIDs = "memberTabIDs"
+        static let memberTabIndices = "memberTabIndices"
         static let isCollapsed = "isCollapsed"
     }
 
@@ -54,11 +55,15 @@ import Cocoa
         coder.encode(isCollapsed, forKey: CodingKey.isCollapsed)
     }
 
-    @objc func toDictionary() -> [String: Any] {
+    @objc func toDictionary(allTabs: [PTYTab]) -> [String: Any] {
+        let indices = memberTabIDs.compactMap { id -> NSNumber? in
+            guard let index = allTabs.firstIndex(where: { Int($0.uniqueId) == id }) else { return nil }
+            return NSNumber(value: index)
+        }
         var dict: [String: Any] = [
             CodingKey.identifier: identifier,
             CodingKey.name: name,
-            CodingKey.memberTabIDs: memberTabIDs.map { NSNumber(value: $0) },
+            CodingKey.memberTabIndices: indices,
             CodingKey.isCollapsed: isCollapsed
         ]
         if let colorData = try? NSKeyedArchiver.archivedData(withRootObject: color, requiringSecureCoding: false) {
@@ -72,13 +77,13 @@ import Cocoa
               let name = dictionary[CodingKey.name] as? String,
               let colorData = dictionary[CodingKey.color] as? Data,
               let color = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSColor.self, from: colorData),
-              let rawIDs = dictionary[CodingKey.memberTabIDs] as? [NSNumber] else {
+              let rawIndices = dictionary[CodingKey.memberTabIndices] as? [NSNumber] else {
             return nil
         }
         self.identifier = identifier
         self.name = name
         self.color = color
-        self.memberTabIDs = rawIDs.map { $0.intValue }
+        self.memberTabIDs = rawIndices.map { $0.intValue }
         self.isCollapsed = (dictionary[CodingKey.isCollapsed] as? Bool) ?? false
     }
 }

@@ -8,15 +8,6 @@ extension PseudoTerminal {
         return mutableTabGroups as! [iTermTabGroup]
     }
 
-    private var mutableTabGroups: NSMutableArray {
-        if let existing = objc_getAssociatedObject(self, &AssociatedKeys.tabGroups) as? NSMutableArray {
-            return existing
-        }
-        let array = NSMutableArray()
-        objc_setAssociatedObject(self, &AssociatedKeys.tabGroups, array, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        return array
-    }
-
     @objc @discardableResult
     func createTabGroup(name: String, color: NSColor, forTab tab: PTYTab) -> iTermTabGroup {
         let group = iTermTabGroup(name: name, color: color)
@@ -45,11 +36,29 @@ extension PseudoTerminal {
 
     @objc func deleteTabGroup(_ group: iTermTabGroup) {
         if group.isCollapsed {
-            toggleCollapseGroup(group)
+            unstashItems(for: group)
         }
         group.memberTabIDs.removeAll()
         mutableTabGroups.remove(group)
         updateTabGroupDecorations()
+    }
+
+    private func unstashItems(for group: iTermTabGroup) {
+        guard let representativeID = group.memberTabIDs.first,
+              let representativeTab = tabs()?.first(where: { Int($0.uniqueId) == representativeID }),
+              let representativeItem = representativeTab.tabViewItem else { return }
+
+        let tabView = contentView.tabView
+        let baseIndex = tabView.indexOfTabViewItem(representativeItem)
+        guard baseIndex != NSNotFound else { return }
+
+        for (offset, item) in group.stashedTabViewItems.enumerated() {
+            let targetIndex = baseIndex + 1 + offset
+            let safeIndex = min(targetIndex, tabView.numberOfTabViewItems)
+            tabView.insertTabViewItem(item, at: safeIndex)
+        }
+        group.stashedTabViewItems.removeAll()
+        group.isCollapsed = false
     }
 
     @objc func toggleCollapseGroup(_ group: iTermTabGroup) {
@@ -104,18 +113,20 @@ extension PseudoTerminal {
     }
 
     @objc func encodeTabGroupsForArrangement() -> [[String: Any]] {
-        return tabGroups.map { $0.toDictionary() }
+        let allTabs = tabs() ?? []
+        return tabGroups.map { $0.toDictionary(allTabs: allTabs) }
     }
 
     @objc func restoreTabGroupsFromArrangement(_ arrangement: [[String: Any]]) {
-        let allTabs = tabs()
+        let allTabs = tabs() ?? []
         for dict in arrangement {
             guard let group = iTermTabGroup(dictionary: dict) else { continue }
-            let validIDs = group.memberTabIDs.filter { id in
-                allTabs.contains { Int($0.uniqueId) == id }
+            let resolvedIDs = group.memberTabIDs.compactMap { index -> Int? in
+                guard index >= 0, index < allTabs.count else { return nil }
+                return Int(allTabs[index].uniqueId)
             }
-            guard !validIDs.isEmpty else { continue }
-            group.memberTabIDs = validIDs
+            guard !resolvedIDs.isEmpty else { continue }
+            group.memberTabIDs = resolvedIDs
             mutableTabGroups.add(group)
         }
         updateTabGroupDecorations()
@@ -168,7 +179,7 @@ extension PseudoTerminal {
     }
 
     private func collapseGroup(_ group: iTermTabGroup) {
-        let allTabs = tabs()
+        let allTabs = tabs() ?? []
         let memberTabs = group.memberTabIDs.compactMap { id in allTabs.first { Int($0.uniqueId) == id } }
         guard let representative = memberTabs.first else { return }
 
@@ -189,7 +200,7 @@ extension PseudoTerminal {
 
     private func expandGroup(_ group: iTermTabGroup) {
         guard let representativeID = group.memberTabIDs.first,
-              let representativeTab = tabs().first(where: { Int($0.uniqueId) == representativeID }),
+              let representativeTab = (tabs() ?? []).first(where: { Int($0.uniqueId) == representativeID }),
               let representativeItem = representativeTab.tabViewItem else { return }
 
         let tabView = contentView.tabView
@@ -208,7 +219,7 @@ extension PseudoTerminal {
 
     private func enforceContiguity(of group: iTermTabGroup) {
         guard group.memberTabIDs.count > 1 else { return }
-        let allTabs = tabs()
+        let allTabs = tabs() ?? []
         let memberTabs = group.memberTabIDs.compactMap { id in allTabs.first { Int($0.uniqueId) == id } }
         guard let representativeItem = memberTabs.first?.tabViewItem else { return }
 
@@ -227,8 +238,4 @@ extension PseudoTerminal {
             }
         }
     }
-}
-
-private enum AssociatedKeys {
-    static var tabGroups = "iTermTabGroupsKey"
 }

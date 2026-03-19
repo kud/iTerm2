@@ -126,6 +126,8 @@ extern NSString *const TERMINAL_ARRANGEMENT_SIZE_LOCKED;
 // the right type.
 @property (nonatomic, readonly) __unsafe_unretained iTermRootTerminalView *contentView;
 
+@property (nonatomic, readonly) NSMutableArray *mutableTabGroups;
+
 - (void)returnTabBarToContentView;
 - (void)updateForTransparency:(NSWindow<PTYWindow> *)window;
 - (void)updateVariables;
