@@ -46,9 +46,9 @@ extension PseudoTerminal {
     private func unstashItems(for group: iTermTabGroup) {
         guard let representativeID = group.memberTabIDs.first,
               let representativeTab = tabs()?.first(where: { Int($0.uniqueId) == representativeID }),
-              let representativeItem = representativeTab.tabViewItem else { return }
+              let representativeItem = representativeTab.tabViewItem,
+              let tabView = contentView.tabView else { return }
 
-        let tabView = contentView.tabView
         let baseIndex = tabView.indexOfTabViewItem(representativeItem)
         guard baseIndex != NSNotFound else { return }
 
@@ -83,12 +83,11 @@ extension PseudoTerminal {
     }
 
     @objc func updateTabGroupDecorations() {
-        let tabBar = contentView.tabBarControl
-        let allCells = tabBar?.cells
+        guard let tabBar = contentView.tabBarControl else { return }
+        let allCells = tabBar.cells() as? [PSMTabBarCell] ?? []
 
-        for cell in allCells ?? [] {
-            guard let psmCell = cell as? PSMTabBarCell,
-                  let tabViewItem = psmCell.representedObject as? NSTabViewItem,
+        for psmCell in allCells {
+            guard let tabViewItem = psmCell.representedObject as? NSTabViewItem,
                   let tab = tabViewItem.identifier as? PTYTab else {
                 continue
             }
@@ -109,7 +108,7 @@ extension PseudoTerminal {
                 psmCell.groupMemberCount = 0
             }
         }
-        tabBar?.setNeedsDisplay(true)
+        tabBar.needsDisplay = true
     }
 
     @objc func encodeTabGroupsForArrangement() -> [[String: Any]] {
@@ -186,12 +185,12 @@ extension PseudoTerminal {
         if let selected = currentTab(),
            group.memberTabIDs.contains(Int(selected.uniqueId)),
            selected !== representative {
-            contentView.tabView.selectTabViewItem(representative.tabViewItem)
+            contentView.tabView?.selectTabViewItem(representative.tabViewItem)
         }
 
         for tab in memberTabs.dropFirst() {
             guard let item = tab.tabViewItem else { continue }
-            contentView.tabView.removeTabViewItem(item)
+            contentView.tabView?.removeTabViewItem(item)
             group.stashedTabViewItems.append(item)
         }
         group.isCollapsed = true
@@ -203,7 +202,7 @@ extension PseudoTerminal {
               let representativeTab = (tabs() ?? []).first(where: { Int($0.uniqueId) == representativeID }),
               let representativeItem = representativeTab.tabViewItem else { return }
 
-        let tabView = contentView.tabView
+        guard let tabView = contentView.tabView else { return }
         let baseIndex = tabView.indexOfTabViewItem(representativeItem)
         guard baseIndex != NSNotFound else { return }
 
@@ -221,9 +220,9 @@ extension PseudoTerminal {
         guard group.memberTabIDs.count > 1 else { return }
         let allTabs = tabs() ?? []
         let memberTabs = group.memberTabIDs.compactMap { id in allTabs.first { Int($0.uniqueId) == id } }
-        guard let representativeItem = memberTabs.first?.tabViewItem else { return }
+        guard let representativeItem = memberTabs.first?.tabViewItem,
+              let tabView = contentView.tabView else { return }
 
-        let tabView = contentView.tabView
         let anchorIndex = tabView.indexOfTabViewItem(representativeItem)
         guard anchorIndex != NSNotFound else { return }
 
