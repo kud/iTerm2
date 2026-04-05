@@ -9,6 +9,14 @@
 
 set -uo pipefail
 
+BOLD=$'\e[1m'
+DIM=$'\e[2m'
+GREEN=$'\e[32m'
+CYAN=$'\e[36m'
+RED=$'\e[31m'
+YELLOW=$'\e[33m'
+RESET=$'\e[0m'
+
 APP_EXEC="$1"
 BUILD_DIR="$2"
 shift 2
@@ -30,7 +38,8 @@ stop_app() {
 launch_app() {
   "$APP_EXEC" "${APP_ARGS[@]}" &
   app_pid=$!
-  print "▶  iTerm2 launched (PID $app_pid) — r to rebuild+reload · q to quit"
+  print ""
+  print "${GREEN}${BOLD}▶  iTerm2 launched${RESET} ${DIM}(PID $app_pid)${RESET}  ${CYAN}r${RESET}${DIM} rebuild+reload${RESET}  ${CYAN}q${RESET}${DIM} quit${RESET}"
 }
 
 cleanup() {
@@ -43,12 +52,12 @@ cleanup() {
 
 rebuild_and_reload() {
   stop_app
-  print "⟳  Building…"
+  print "${YELLOW}⟳  Building…${RESET}"
   if make -C "$PROJECT_DIR" Development BUILD_DIR="$BUILD_DIR"; then
-    print "✓  Build succeeded"
+    print "${GREEN}✓  Build succeeded${RESET}"
     launch_app
   else
-    print "✗  Build failed — fix errors and press r to retry"
+    print "${RED}✗  Build failed — fix errors and press r to retry${RESET}"
   fi
 }
 
