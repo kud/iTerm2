@@ -17,6 +17,8 @@ NSString *iTermMetalUnavailableReasonDescription(iTermMetalUnavailableReason rea
             return @"GPU Renderer is disabled in Settings > General.";
         case iTermMetalUnavailableReasonNotATerminal:
             return @"the current session is not a terminal.";
+        case iTermMetalUnavailableReasonPaneCollapsed:
+            return @"the pane is collapsed.";
         case iTermMetalUnavailableReasonLigatures:
             return @"ligatures are enabled. You can disable them in Settings > Profiles > Text > Use ligatures.";
         case iTermMetalUnavailableReasonInitializing:

@@ -278,6 +278,10 @@ extern NSString *const PTYTabArrangementOptionsPendingJumps;
 // NOTE: Do not call this directly. It doesn't handle tmux correctly.
 - (void)maximize;
 - (void)toggleMaximizeSession:(PTYSession *)session;
+// Collapse a pane to its title bar (stacked splits only) and back.
+- (BOOL)canCollapseSession:(PTYSession *)session;
+- (void)toggleCollapseSession:(PTYSession *)session;
+- (void)expandSession:(PTYSession *)session;
 // Does any session in this tab require prompt on close?
 - (iTermPromptOnCloseReason *)promptOnCloseReason;
 

@@ -278,6 +278,10 @@ typedef enum {
 // User double clicked on title bar
 - (void)sessionDoubleClickOnTitleBar:(PTYSession *)session;
 
+// Collapsing a pane to its title bar. See -[PTYTab canCollapseSession:].
+- (BOOL)sessionCanCollapse:(PTYSession *)session;
+- (void)sessionToggleCollapse:(PTYSession *)session;
+
 // Returns the 0-based pane number to use in $ITERM_SESSION_ID.
 - (NSUInteger)sessionPaneNumber:(PTYSession *)session;
 
@@ -393,6 +397,9 @@ backgroundColor:(nullable NSColor *)backgroundColor;
 @property(nonatomic, assign) BOOL alertOnNextMark;
 // Prevents the pane from being dragged or detached.
 @property(nonatomic, assign) BOOL locked;
+
+// Collapse or expand this pane, keeping keyboard focus sensible either way.
+- (void)toggleCollapse;
 // Floating session note model.
 @property(nonatomic, retain, nullable) iTermSessionNoteModel *sessionNoteModel;
 // This comes from prefs and is kept up to date.

@@ -176,6 +176,8 @@ extern NSString *const SessionViewWasSelectedForInspectionNotification;
 - (void)sessionViewWillDraw;
 - (BOOL)sessionViewIsLocked;
 - (void)sessionViewToggleLock;
+- (BOOL)sessionViewCanCollapse;
+- (void)sessionViewToggleCollapse;
 - (id<PSMPUAFontProvider>)sessionViewPUAFontProvider;
 @end
 
@@ -218,6 +220,13 @@ typedef NS_ENUM(NSUInteger, iTermSessionViewFindDriver) {
 
 @property(nonatomic) CGFloat composerHeight;
 @property(nonatomic, strong, nullable) NSNumber *preferredWidth;
+// A collapsed pane keeps its title bar and progress bar and hides the terminal. Its
+// height is pinned to collapsedHeight by PTYTab while collapsed.
+@property(nonatomic, getter=isCollapsed) BOOL collapsed;
+// Fraction of the parent split (excluding dividers) the pane occupied before it was
+// collapsed, so expanding restores it proportionally.
+@property(nonatomic) CGFloat expandedFraction;
+@property(nonatomic, readonly) CGFloat collapsedHeight;
 @property(nonatomic, readonly) CGFloat desiredRightExtra;
 
 // For macOS 10.14+ when subpixel AA is OFF, this draws the default background color. When there's

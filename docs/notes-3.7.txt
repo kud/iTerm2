@@ -834,6 +834,14 @@ Web browser improvements:
   Manager button to pick an existing login.
   View or remove saved passwords from the
   password manager.
+- Split panes can now be collapsed to just their
+  title bar with View > Collapse Pane
+  (Shift-Option-Cmd-Return) or the chevron beside
+  the pane’s close button, so a session keeps
+  running out of the way. The pane’s progress bar
+  stays visible while it is collapsed. Click the
+  title bar or use the same command to expand it.
+  Available for panes stacked one above another.
 
 Bug Fixes:
 - The SCP-download menu animation no longer

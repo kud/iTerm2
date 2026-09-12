@@ -623,7 +623,7 @@ static void SetAgainstGrainDim(BOOL isVertical, NSSize *dest, CGFloat value) {
                                                 !statusBarsOnTop &&
                                                 [iTermProfilePreferences boolForKey:KEY_SHOW_STATUS_BAR
                                                                           inProfile:aSession.profile]);
-        const BOOL changedTitle = [[aSession view] setShowTitle:shouldShowTitles
+        const BOOL changedTitle = [[aSession view] setShowTitle:(shouldShowTitles || aSession.view.isCollapsed)
                                      adjustScrollView:![self isTmuxTab]];
         const BOOL changedBottomStatusBar = [aSession.view setShowBottomStatusBar:shouldShowBottomStatusBar
                                                                  adjustScrollView:!self.isTmuxTab];
@@ -668,6 +668,8 @@ static void SetAgainstGrainDim(BOOL isVertical, NSSize *dest, CGFloat value) {
 }
 
 - (void)updateSessionOrdinals {
+    [self expandSessionsThatCanNoLongerBeCollapsed];
+    [self updateCollapseButtons];
     int i = 1;
     NSArray *orderedSessions = [self orderedSessions];
     for (PTYSession *aSession in orderedSessions) {
@@ -2554,6 +2556,9 @@ static void SetAgainstGrainDim(BOOL isVertical, NSSize *dest, CGFloat value) {
                                    controlSize:NSControlSizeRegular
                                  scrollerStyle:[parentWindow_ scrollerStyle]
                                     rightExtra:session.desiredRightExtra];
+    if (sessionView.isCollapsed) {
+        scrollViewSize.height = sessionView.collapsedHeight;
+    }
     if (respectPinning && sessionView.preferredWidth != nil) {
         scrollViewSize.width = sessionView.preferredWidth.doubleValue;
     }
@@ -2691,6 +2696,9 @@ static void SetAgainstGrainDim(BOOL isVertical, NSSize *dest, CGFloat value) {
                                  respectPinning:respectPinning];
             if (node.vertical && respectPinning && sessionView.preferredWidth != nil) {
                 subviewSize.width = sessionView.preferredWidth.doubleValue;
+            }
+            if (!node.vertical && sessionView.isCollapsed) {
+                subviewSize.height = sessionView.collapsedHeight;
             }
         }
         if ([node isVertical]) {
@@ -2942,6 +2950,11 @@ static void SetAgainstGrainDim(BOOL isVertical, NSSize *dest, CGFloat value) {
 // containing view.
 - (BOOL)fitSessionToCurrentViewSize:(PTYSession *)aSession {
     __block BOOL result = NO;
+    if (aSession.view.isCollapsed) {
+        // The grid is frozen while collapsed so the process never sees a one-row terminal.
+        DLog(@"fitSessionToCurrentViewSize: %@ is collapsed, leaving grid alone", aSession);
+        return NO;
+    }
     [aSession resetMode];
     [aSession.screen performBlockWithJoinedThreads:^(VT100Terminal *terminal, VT100ScreenMutableState *mutableState, id<VT100ScreenDelegate> delegate) {
         DLog(@"fitSessionToCurrentViewSize:%@", aSession);
@@ -5554,6 +5567,7 @@ typedef struct {
 
 - (void)maximize {
     RLog(@"maximize %@", self);
+    [self expandSession:activeSession_];
     for (PTYSession *session in [self sessions]) {
         session.savedRootRelativeOrigin = [self rootRelativeOriginOfSession:session];
     }
@@ -6280,7 +6294,13 @@ typedef struct {
     } else {
         dim = minSize.height;
     }
-    return [self _positionOfDivider:dividerIndex-1 inSplitView:splitView] + dim;
+    const CGFloat result = [self _positionOfDivider:dividerIndex-1 inSplitView:splitView] + dim;
+    SessionView *below = [SessionView castFrom:[[splitView subviews] objectAtIndex:dividerIndex + 1]];
+    if (!splitView.isVertical && below.isCollapsed) {
+        // Dragging up would grow the collapsed pane beneath the divider.
+        return MAX(result, [self _positionOfDivider:dividerIndex + 1 inSplitView:splitView] - below.collapsedHeight - [splitView dividerThickness]);
+    }
+    return result;
 }
 
 // Prevent any session from becoming smaller than its minimum size because of
@@ -6302,7 +6322,13 @@ typedef struct {
     } else {
         dim = minSize.height;
     }
-    return [self _positionOfDivider:dividerIndex+1 inSplitView:splitView] - dim - [splitView dividerThickness];
+    const CGFloat result = [self _positionOfDivider:dividerIndex+1 inSplitView:splitView] - dim - [splitView dividerThickness];
+    SessionView *above = [SessionView castFrom:[[splitView subviews] objectAtIndex:dividerIndex]];
+    if (!splitView.isVertical && above.isCollapsed) {
+        // Dragging down would grow the collapsed pane above the divider.
+        return MIN(result, [self _positionOfDivider:dividerIndex - 1 inSplitView:splitView] + above.collapsedHeight);
+    }
+    return result;
 }
 
 - (NSSet*)_ancestorsOfLockedSession {
@@ -6548,6 +6574,9 @@ typedef struct {
                                                                  respectPinning:respectPinning]);
                     if (respectPinning && splitView.vertical && sessionView.preferredWidth != nil) {
                         theMaxSize = sessionView.preferredWidth.doubleValue;
+                    }
+                    if (!splitView.vertical && sessionView.isCollapsed) {
+                        theMaxSize = sessionView.collapsedHeight;
                     }
                 }
                 PtyLog(@"splitView:resizeSubviewsWithOldSize - this subview is unlocked");
@@ -6795,12 +6824,17 @@ typedef struct {
 }
 
 - (void)adjustSplitSubviewSizesForPinnedSizes:(NSSplitView *)splitView {
-    if (!splitView.vertical) {
-        return;
-    }
     NSArray<SessionView *> *sessionViews = [splitView.subviews mapWithBlock:^id _Nullable(__kindof NSView * _Nonnull anObject) {
         return [SessionView castFrom:anObject];
     }];
+    if (!splitView.vertical) {
+        if ([sessionViews anyWithBlock:^BOOL(SessionView *sessionView) {
+            return sessionView.isCollapsed;
+        }]) {
+            [self resizeSubviewsOfSplitView:splitView oldSize:splitView.frame.size respectPinning:YES];
+        }
+        return;
+    }
     if ([sessionViews allWithBlock:^BOOL(SessionView *sessionView) {
         return sessionView.preferredWidth != nil;
     }]) {
@@ -7353,6 +7387,14 @@ typedef struct {
     [self toggleMaximizeSession:session];
 }
 
+- (BOOL)sessionCanCollapse:(PTYSession *)session {
+    return [self canCollapseSession:session];
+}
+
+- (void)sessionToggleCollapse:(PTYSession *)session {
+    [self toggleCollapseSession:session];
+}
+
 - (void)toggleMaximizeSession:(PTYSession *)session {
     if (session.isTmuxClient) {
         [session toggleTmuxZoom];
@@ -7363,6 +7405,126 @@ typedef struct {
             [self setActiveSession:session];
         }
         [self maximize];
+    }
+}
+
+#pragma mark - Collapsing panes
+
+- (BOOL)node:(NSView *)node containsExpandedSessionOtherThan:(SessionView *)excluded {
+    SessionView *sessionView = [SessionView castFrom:node];
+    if (sessionView) {
+        return sessionView != excluded && !sessionView.isCollapsed;
+    }
+    for (NSView *subview in node.subviews) {
+        if ([self node:subview containsExpandedSessionOtherThan:excluded]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+// Collapse is offered only where it reclaims space: in a stacked split with at least
+// one sibling still expanded. A header-height pane in a side-by-side split would leave
+// a region no view owns.
+- (BOOL)canCollapseSession:(PTYSession *)session {
+    if (!session || session.isTmuxClient || [self isTmuxTab] || [self hasMaximizedPane]) {
+        return NO;
+    }
+    PTYSplitView *parent = [PTYSplitView castFrom:session.view.superview];
+    if (!parent || parent.isVertical) {
+        return NO;
+    }
+    return [self node:parent containsExpandedSessionOtherThan:session.view];
+}
+
+- (CGFloat)withGrainSizeAvailableInSplitView:(NSSplitView *)splitView {
+    const NSUInteger count = splitView.subviews.count;
+    const CGFloat dividers = count > 1 ? splitView.dividerThickness * (count - 1) : 0;
+    return (splitView.isVertical ? NSWidth(splitView.frame) : NSHeight(splitView.frame)) - dividers;
+}
+
+- (void)collapseSession:(PTYSession *)session {
+    if (session.view.isCollapsed || ![self canCollapseSession:session]) {
+        return;
+    }
+    DLog(@"collapseSession:%@", session);
+    PTYSplitView *parent = [PTYSplitView castFrom:session.view.superview];
+    const CGFloat available = [self withGrainSizeAvailableInSplitView:parent];
+    session.view.expandedFraction = available > 0 ? NSHeight(session.view.frame) / available : 0;
+    session.view.collapsed = YES;
+    [self updatePaneTitles];
+    [parent adjustSubviews];
+    [self _splitViewDidResizeSubviews:parent];
+    [self updateSessionOrdinals];
+    [realParentWindow_ invalidateRestorableState];
+}
+
+- (void)expandSession:(PTYSession *)session {
+    if (!session.view.isCollapsed) {
+        return;
+    }
+    DLog(@"expandSession:%@", session);
+    PTYSplitView *parent = [PTYSplitView castFrom:session.view.superview];
+    session.view.collapsed = NO;
+    if (parent && !parent.isVertical) {
+        [self restoreExpandedHeightOfSessionView:session.view inSplitView:parent];
+    }
+    [self updatePaneTitles];
+    [parent adjustSubviews];
+    [self _splitViewDidResizeSubviews:parent];
+    [self updateSessionOrdinals];
+    [realParentWindow_ invalidateRestorableState];
+}
+
+// Give the pane back the fraction of the split it held when it collapsed, taking the
+// difference from its siblings in proportion to their current heights, so that
+// collapse followed by expand with nothing else changed is a no-op.
+- (void)restoreExpandedHeightOfSessionView:(SessionView *)sessionView inSplitView:(NSSplitView *)splitView {
+    const CGFloat available = [self withGrainSizeAvailableInSplitView:splitView];
+    const CGFloat fraction = MIN(MAX(sessionView.expandedFraction, 0), 1);
+    if (available <= 0 || fraction <= 0) {
+        return;
+    }
+    const CGFloat desired = round(available * fraction);
+    CGFloat siblingsTotal = 0;
+    for (NSView *subview in splitView.subviews) {
+        if (subview != sessionView) {
+            siblingsTotal += NSHeight(subview.frame);
+        }
+    }
+    const CGFloat remaining = available - desired;
+    for (NSView *subview in splitView.subviews) {
+        NSSize size = subview.frame.size;
+        if (subview == sessionView) {
+            size.height = desired;
+        } else if (siblingsTotal > 0) {
+            size.height = round(remaining * NSHeight(subview.frame) / siblingsTotal);
+        }
+        [subview setFrameSize:size];
+    }
+}
+
+- (void)toggleCollapseSession:(PTYSession *)session {
+    if (session.view.isCollapsed) {
+        [self expandSession:session];
+    } else {
+        [self collapseSession:session];
+    }
+}
+
+// Membership and layout changes can leave a collapsed pane somewhere collapse is no
+// longer allowed (moved into a side-by-side split, last expanded sibling closed).
+- (void)expandSessionsThatCanNoLongerBeCollapsed {
+    for (PTYSession *session in [self sessions]) {
+        if (session.view.isCollapsed && ![self canCollapseSession:session]) {
+            [self expandSession:session];
+        }
+    }
+}
+
+- (void)updateCollapseButtons {
+    for (PTYSession *session in [self sessions]) {
+        [session.view.title updateCollapseButton];
     }
 }
 

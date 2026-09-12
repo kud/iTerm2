@@ -21,6 +21,8 @@
 - (NSColor *)sessionTitleViewBackgroundColor;
 - (BOOL)sessionTitleViewIsLocked;
 - (void)sessionTitleViewToggleLock;
+- (BOOL)sessionTitleViewCanCollapse;
+- (void)sessionTitleViewToggleCollapse;
 
 @end
 
@@ -31,10 +33,14 @@
 @property(nonatomic, assign) double dimmingAmount;
 @property(nonatomic, assign) int ordinal;
 @property(nonatomic, weak) id<PSMPUAFontProvider> puaFontProvider;
+// Set while the pane is collapsed to its title bar. The chevron reflects it and the
+// view becomes the first responder in place of the hidden terminal.
+@property(nonatomic) BOOL collapsed;
 
 - (void)updateTextColor;
 - (void)updateBackgroundColor;
 - (void)updateLockButton;
+- (void)updateCollapseButton;
 - (void)invalidateTitleFont;
 
 @end

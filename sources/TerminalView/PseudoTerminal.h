@@ -325,6 +325,7 @@ extern NSString *const iTermDidCreateTerminalWindowNotification;
 
 // Maximize or unmaximize the active pane
 - (void)toggleMaximizeActivePane;
+- (void)toggleCollapseActivePane;
 
 // Return the smallest allowable width for this terminal.
 - (float)minWidth;

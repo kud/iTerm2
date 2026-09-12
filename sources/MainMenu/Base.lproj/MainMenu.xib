@@ -1116,6 +1116,16 @@ DQ
                                     <action selector="maximizePane:" target="201" id="1236"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Collapse Pane" identifier="Collapse Pane" id="cLp-Sp-Pn1">
+                                <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                <modifierMask key="keyEquivalentModifierMask" shift="YES" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="collapsePane:" target="201" id="cLp-Sp-Pn2"/>
+                                </connections>
+                                <accessibility identifier="Collapse Pane"/>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="1235">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
