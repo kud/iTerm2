@@ -17,6 +17,8 @@ NSString *iTermMetalUnavailableReasonDescription(iTermMetalUnavailableReason rea
             return NSLocalizedStringWithDefaultValue(@"MetalUnavailable.Disabled", nil, [NSBundle mainBundle], @"GPU Renderer is disabled in Settings > General.", @"GPU renderer unavailable reason");
         case iTermMetalUnavailableReasonNotATerminal:
             return NSLocalizedStringWithDefaultValue(@"MetalUnavailable.NotATerminal", nil, [NSBundle mainBundle], @"the current session is not a terminal.", @"GPU renderer unavailable reason");
+        case iTermMetalUnavailableReasonPaneCollapsed:
+            return NSLocalizedStringWithDefaultValue(@"MetalUnavailable.PaneCollapsed", nil, [NSBundle mainBundle], @"the pane is collapsed.", @"GPU renderer unavailable reason");
         case iTermMetalUnavailableReasonLigatures:
             return NSLocalizedStringWithDefaultValue(@"MetalUnavailable.Ligatures", nil, [NSBundle mainBundle], @"ligatures are enabled. You can disable them in Settings > Profiles > Text > Use ligatures.", @"GPU renderer unavailable reason");
         case iTermMetalUnavailableReasonInitializing:

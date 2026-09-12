@@ -304,6 +304,8 @@ static NSString *const SESSION_ARRANGEMENT_SHELL_INTEGRATION_EVER_USED_DEPRECATE
 static NSString *const SESSION_ARRANGEMENT_SHOULD_EXPECT_PROMPT_MARKS = @"Should Expect Prompt Marks";  // BOOL
 static NSString *const SESSION_ARRANGEMENT_ALERT_ON_NEXT_MARK = @"Alert on Next Mark";  // BOOL
 static NSString *const SESSION_ARRANGEMENT_LOCKED = @"Locked";  // BOOL
+static NSString *const SESSION_ARRANGEMENT_COLLAPSED = @"Collapsed";  // BOOL
+static NSString *const SESSION_ARRANGEMENT_COLLAPSED_EXPANDED_FRACTION = @"Collapsed Expanded Fraction";  // double
 static NSString *const SESSION_ARRANGEMENT_LAST_ACTIVITY_ORDINAL = @"Last Activity Ordinal";  // NSNumber (NSInteger). Cross-window MRU ordinal.
 static NSString *const SESSION_ARRANGEMENT_COMMANDS = @"Commands";  // Array of strings
 static NSString *const SESSION_ARRANGEMENT_CURSOR_GUIDE = @"Cursor Guide";  // BOOL
@@ -1900,6 +1902,10 @@ ITERM_WEAKLY_REFERENCEABLE
         aSession->_sshState = [arrangement[SESSION_ARRANGEMENT_SSH_STATE] unsignedIntegerValue];
     }
     aSession.cursorTypeOverride = arrangement[SESSION_ARRANGEMENT_CURSOR_TYPE_OVERRIDE];
+    if ([[NSNumber castFrom:arrangement[SESSION_ARRANGEMENT_COLLAPSED]] boolValue]) {
+        aSession.view.expandedFraction = [[NSNumber castFrom:arrangement[SESSION_ARRANGEMENT_COLLAPSED_EXPANDED_FRACTION]] doubleValue];
+        aSession.view.collapsed = YES;
+    }
     NSDictionary *tabStatusDict = arrangement[SESSION_ARRANGEMENT_TAB_STATUS];
     if (tabStatusDict) {
         aSession->_tabStatus = [[iTermSessionTabStatus fromArrangementDictionary:tabStatusDict
@@ -5327,6 +5333,11 @@ webViewConfiguration:(WKWebViewConfiguration *)webViewConfiguration
     if (diffOverlay != nil && diffOverlay.window != nil && !diffOverlay.isHidden) {
         return diffOverlay.promptResponder;
     }
+    if (_view.isCollapsed && _view.title != nil) {
+        // Keystrokes must never reach a terminal the user cannot see; the title bar
+        // swallows them and Return expands the pane.
+        return _view.title;
+    }
     if (_view.isBrowser) {
         return _view.browserViewController.webView;
     }
@@ -7442,6 +7453,10 @@ webViewConfiguration:(WKWebViewConfiguration *)webViewConfiguration
         result[SESSION_ARRANGEMENT_CLIPPINGS_VIEW_INDEX] = @(self.localClippingsViewIndex);
     }
     result[SESSION_ARRANGEMENT_CLIPPINGS_VISIBLE] = @(self.clippingsVisible);
+    if (_view.isCollapsed) {
+        result[SESSION_ARRANGEMENT_COLLAPSED] = @YES;
+        result[SESSION_ARRANGEMENT_COLLAPSED_EXPANDED_FRACTION] = @(_view.expandedFraction);
+    }
     // Workgroup code-review toolbar toggles. Per-session runtime flags,
     // default off; written only when on so a plain session's arrangement
     // doesn't grow. Restored in setContentsFromArrangement so the toggle
@@ -9359,6 +9374,12 @@ extendResultsAcrossSoftBoundaries:(BOOL)extendResultsAcrossSoftBoundaries {
     if (_view.isBrowser) {
         if (reason) {
             *reason = iTermMetalUnavailableReasonNotATerminal;
+        }
+        return NO;
+    }
+    if (_view.isCollapsed) {
+        if (reason) {
+            *reason = iTermMetalUnavailableReasonPaneCollapsed;
         }
         return NO;
     }
@@ -13523,6 +13544,16 @@ typedef NS_ENUM(NSUInteger, PTYSessionTmuxReport) {
 
 - (void)textViewToggleLock {
     self.locked = !_locked;
+}
+
+- (void)toggleCollapse {
+    const BOOL wasActive = [_delegate sessionIsActiveInTab:self];
+    [_delegate sessionToggleCollapse:self];
+    if (wasActive || !_view.isCollapsed) {
+        [_delegate setActiveSession:self];
+        [_textview.window makeFirstResponder:self.mainResponder];
+    }
+    [self updateMetalDriver];
 }
 
 - (void)textViewLockAllInTab {
@@ -21899,6 +21930,14 @@ static const NSTimeInterval PTYSessionFocusReportBellSquelchTimeIntervalThreshol
 
 - (void)sessionViewToggleLock {
     self.locked = !_locked;
+}
+
+- (BOOL)sessionViewCanCollapse {
+    return [_delegate sessionCanCollapse:self];
+}
+
+- (void)sessionViewToggleCollapse {
+    [self toggleCollapse];
 }
 
 - (id<PSMPUAFontProvider>)sessionViewPUAFontProvider {

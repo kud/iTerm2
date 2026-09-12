@@ -11070,6 +11070,10 @@ static CGFloat iTermDimmingAmount(PSMTabBarControl *tabView) {
     [self.currentTab toggleMaximizeSession:self.currentTab.activeSession];
 }
 
+- (void)toggleCollapseActivePane {
+    [self.currentTab.activeSession toggleCollapse];
+}
+
 - (void)newWindowWithBookmarkGuid:(NSString*)guid
 {
     Profile* bookmark = [[ProfileModel sharedInstance] bookmarkWithGuid:guid];

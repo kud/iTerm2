@@ -51,6 +51,7 @@
 #import "NSWorkspace+iTerm.h"
 #import "PTYSession.h"
 #import "PTYTab.h"
+#import "SessionView.h"
 #import "PTYTextView.h"
 #import "PTYTextView+ARC.h"
 #import "iTermSelection.h"
@@ -486,6 +487,15 @@ static NSModalResponse iTermCompareRenderingRunModal(id self, SEL _cmd) {
         return [[iTermClaudeCodeIntegrationMenuController shared] validateReinstallMenuItem:menuItem];
     } else if ([menuItem action] == @selector(uninstallClaudeCodeIntegration:)) {
         return [[iTermClaudeCodeIntegrationMenuController shared] validateUninstallMenuItem:menuItem];
+    } else if ([menuItem action] == @selector(collapsePane:)) {
+        PseudoTerminal *terminal = [[iTermController sharedInstance] currentTerminal];
+        PTYSession *session = terminal.currentTab.activeSession;
+        if (session.view.isCollapsed) {
+            menuItem.title = NSLocalizedStringWithDefaultValue(@"MainMenu.ExpandPane", nil, [NSBundle mainBundle], @"Expand Pane", @"View menu item that expands the active pane after it was collapsed to its title bar");
+            return YES;
+        }
+        menuItem.title = NSLocalizedStringWithDefaultValue(@"MainMenu.CollapsePane", nil, [NSBundle mainBundle], @"Collapse Pane", @"View menu item that collapses the active pane to its title bar");
+        return !terminal.inInstantReplay && [terminal.currentTab canCollapseSession:session];
     } else if (menuItem == maximizePane) {
         if ([[[iTermController sharedInstance] currentTerminal] inInstantReplay]) {
             // Things get too complex if you allow this. It crashes.
@@ -3317,6 +3327,10 @@ static iTermKeyEventReplayer *gReplayer;
 - (IBAction)maximizePane:(id)sender {
     [[[iTermController sharedInstance] currentTerminal] toggleMaximizeActivePane];
     [self updateMaximizePaneMenuItem];
+}
+
+- (IBAction)collapsePane:(id)sender {
+    [[[iTermController sharedInstance] currentTerminal] toggleCollapseActivePane];
 }
 
 - (IBAction)toggleUseTransparency:(id)sender {

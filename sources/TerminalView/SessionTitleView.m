@@ -41,6 +41,7 @@ static const CGFloat kButtonSize = 17;
     NSTextField *label_;
     NSButton *closeButton_;
     NSButton *lockButton_;
+    NSButton *collapseButton_;
     iTermHamburgerButton *menuButton_;
 }
 
@@ -51,6 +52,7 @@ static const CGFloat kButtonSize = 17;
 
 static const double kMargin = 5;
 static const CGFloat kLockButtonSize = 14;
+static const CGFloat kCollapseButtonSize = 14;
 
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -65,6 +67,16 @@ static const CGFloat kLockButtonSize = 14;
         [closeButton_ setTitle:@""];
         [[closeButton_ cell] setHighlightsBy:NSContentsCellMask];
         [self addSubview:closeButton_];
+
+        collapseButton_ = [[NoFirstResponderButton alloc] initWithFrame:NSMakeRect(0, 0, kCollapseButtonSize, kCollapseButtonSize)];
+        [collapseButton_ setButtonType:NSButtonTypeMomentaryPushIn];
+        [collapseButton_ setTarget:self];
+        [collapseButton_ setAction:@selector(toggleCollapse:)];
+        [collapseButton_ setBordered:NO];
+        [collapseButton_ setTitle:@""];
+        [[collapseButton_ cell] setHighlightsBy:NSContentsCellMask];
+        [self addSubview:collapseButton_];
+        [self updateCollapseButtonImage];
 
         __weak __typeof(self) weakSelf = self;
         menuButton_ = [[iTermHamburgerButton alloc] initWithMenuProvider:^NSMenu * _Nonnull {
@@ -137,6 +149,13 @@ static const CGFloat kLockButtonSize = 14;
                                     kButtonSize,
                                     kButtonSize);
     x += closeButton_.frame.size.width + kMargin;
+    if (!collapseButton_.isHidden) {
+        collapseButton_.frame = NSMakeRect(x,
+                                           (frame.size.height - kCollapseButtonSize) / 2,
+                                           kCollapseButtonSize,
+                                           kCollapseButtonSize);
+        x += kCollapseButtonSize + kMargin;
+    }
     menuButton_.frame = NSMakeRect(frame.size.width - menuButton_.image.size.width - 6,
                                    (frame.size.height - menuButton_.image.size.height) / 2,
                                    menuButton_.image.size.width,
@@ -182,7 +201,8 @@ static const CGFloat kLockButtonSize = 14;
 - (void)layoutStatusBar {
     if (_statusBarViewController) {
         const CGFloat margin = 5;
-        const CGFloat minX = NSMaxX(closeButton_.frame) + margin;
+        const CGFloat leadingMaxX = collapseButton_.isHidden ? NSMaxX(closeButton_.frame) : NSMaxX(collapseButton_.frame);
+        const CGFloat minX = leadingMaxX + margin;
         _statusBarViewController.view.frame = NSMakeRect(minX,
                                                          1,
                                                          NSMinX(menuButton_.frame) - margin - minX,
@@ -202,6 +222,83 @@ static const CGFloat kLockButtonSize = 14;
 - (void)toggleLock:(id)sender {
     [delegate_ sessionTitleViewToggleLock];
     [self updateLockButton];
+}
+
+- (void)toggleCollapse:(id)sender {
+    [delegate_ sessionTitleViewToggleCollapse];
+}
+
+- (void)setCollapsed:(BOOL)collapsed {
+    if (_collapsed == collapsed) {
+        return;
+    }
+    _collapsed = collapsed;
+    [self updateCollapseButton];
+}
+
+- (void)updateCollapseButtonImage {
+    SFSymbol symbol = _collapsed ? SFSymbolChevronRight : SFSymbolChevronDown;
+    NSString *accessibilityDescription =
+        _collapsed ? NSLocalizedStringWithDefaultValue(@"SessionTitleView.ExpandAccessibility", nil, [NSBundle mainBundle], @"Expand pane", @"Accessibility description for the chevron on a collapsed pane’s title bar")
+                   : NSLocalizedStringWithDefaultValue(@"SessionTitleView.CollapseAccessibility", nil, [NSBundle mainBundle], @"Collapse pane", @"Accessibility description for the chevron on an expanded pane’s title bar");
+    NSImage *image = [NSImage imageWithSystemSymbolName:SFSymbolGetString(symbol)
+                               accessibilityDescription:accessibilityDescription];
+    NSImageSymbolConfiguration *config = [NSImageSymbolConfiguration configurationWithPointSize:10 weight:NSFontWeightSemibold];
+    [collapseButton_ setImage:[image imageWithSymbolConfiguration:config]];
+    [collapseButton_ setToolTip:_collapsed ? NSLocalizedStringWithDefaultValue(@"SessionTitleView.ExpandTooltip", nil, [NSBundle mainBundle], @"Expand pane", @"Tooltip for the chevron on a collapsed pane’s title bar")
+                                           : NSLocalizedStringWithDefaultValue(@"SessionTitleView.CollapseTooltip", nil, [NSBundle mainBundle], @"Collapse pane", @"Tooltip for the chevron on an expanded pane’s title bar")];
+}
+
+- (void)updateCollapseButton {
+    [collapseButton_ setHidden:!_collapsed && ![delegate_ sessionTitleViewCanCollapse]];
+    [self updateCollapseButtonImage];
+    [self layoutSubviews];
+    [self layoutStatusBar];
+    [self noteFocusRingMaskChanged];
+    [self setNeedsDisplay:YES];
+}
+
+// While collapsed the title bar stands in for the hidden terminal as the first
+// responder, so typing lands here (and goes nowhere) instead of in a pane the user
+// cannot see.
+- (BOOL)acceptsFirstResponder {
+    return _collapsed;
+}
+
+- (BOOL)becomeFirstResponder {
+    [self noteFocusRingMaskChanged];
+    [self setNeedsDisplay:YES];
+    return [super becomeFirstResponder];
+}
+
+- (BOOL)resignFirstResponder {
+    [self noteFocusRingMaskChanged];
+    [self setNeedsDisplay:YES];
+    return [super resignFirstResponder];
+}
+
+- (void)keyDown:(NSEvent *)event {
+    if (_collapsed) {
+        const unichar character = event.charactersIgnoringModifiers.length > 0 ? [event.charactersIgnoringModifiers characterAtIndex:0] : 0;
+        if (character == NSCarriageReturnCharacter || character == NSEnterCharacter) {
+            [delegate_ sessionTitleViewToggleCollapse];
+            return;
+        }
+        // Swallow everything else: a collapsed pane never receives keyboard input.
+        return;
+    }
+    [super keyDown:event];
+}
+
+- (NSRect)focusRingMaskBounds {
+    if (_collapsed && self.window.firstResponder == self && !collapseButton_.isHidden) {
+        return NSInsetRect(collapseButton_.frame, -2, -2);
+    }
+    return NSZeroRect;
+}
+
+- (void)drawFocusRingMask {
+    NSRectFill([self focusRingMaskBounds]);
 }
 
 - (void)updateLockButton {
@@ -322,6 +419,7 @@ static const CGFloat kLockButtonSize = 14;
         NSColor *custom = [NSColor colorFromHexString:customText];
         if (custom) {
             label_.textColor = custom;
+            collapseButton_.contentTintColor = custom;
             menuButton_.contentTintColor = custom;
             [self setNeedsDisplay:YES];
             return;
@@ -331,6 +429,7 @@ static const CGFloat kLockButtonSize = 14;
     iTermPreferencesTabStyle preferredStyle = [iTermPreferences intForKey:kPreferenceKeyTabStyle];
     if (self.window.ptyWindow.it_terminalWindowUseMinimalStyle) {
         label_.textColor = [self.window.ptyWindow it_terminalWindowDecorationTextColorForBackgroundColor:[delegate_ sessionTitleViewBackgroundColor]];
+        collapseButton_.contentTintColor = label_.textColor;
         menuButton_.contentTintColor = [NSColor secondaryLabelColor];
         [self setNeedsDisplay:YES];
         return;
@@ -370,6 +469,7 @@ static const CGFloat kLockButtonSize = 14;
             break;
     }
     [label_ setTextColor:[NSColor colorWithCalibratedWhite:whiteLevel alpha:1]];
+    collapseButton_.contentTintColor = label_.textColor;
     menuButton_.contentTintColor = [NSColor secondaryLabelColor];
     [self setNeedsDisplay:YES];
 }
@@ -384,6 +484,11 @@ static const CGFloat kLockButtonSize = 14;
 }
 
 - (void)mouseUp:(NSEvent *)theEvent {
+    if (_collapsed && theEvent.clickCount == 1) {
+        // A collapsed strip is one big affordance: any click on it expands the pane.
+        [delegate_ sessionTitleViewToggleCollapse];
+        return;
+    }
     if (theEvent.clickCount == 2) {
         [self.delegate doubleClickOnTitleView];
     } else {

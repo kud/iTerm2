@@ -137,6 +137,8 @@ NSString *const SessionViewWasSelectedForInspectionNotification = @"SessionViewW
     SplitSelectionView *_splitSelectionView;
 
     BOOL _showTitle;
+    BOOL _collapsed;
+    CGFloat _expandedFraction;
     BOOL _showBottomStatusBar;
     SessionTitleView *_title;
 
@@ -397,7 +399,7 @@ NSString *const SessionViewWasSelectedForInspectionNotification = @"SessionViewW
 }
 
 - (CGFloat)toolbarReservedHeight {
-    return _toolbarView ? iTermGetSessionViewToolbarHeight() : 0;
+    return (_toolbarView && !_collapsed) ? iTermGetSessionViewToolbarHeight() : 0;
 }
 
 - (CGFloat)titleReservedHeight {
@@ -406,6 +408,10 @@ NSString *const SessionViewWasSelectedForInspectionNotification = @"SessionViewW
 
 - (void)updateToolbarFrame {
     if (!_toolbarView) {
+        return;
+    }
+    _toolbarView.hidden = _collapsed;
+    if (_collapsed) {
         return;
     }
     const CGFloat titleHeight = _showTitle ? iTermGetSessionViewTitleHeight() : 0;
@@ -461,6 +467,12 @@ NSString *const SessionViewWasSelectedForInspectionNotification = @"SessionViewW
 
 - (BOOL)isBrowser {
     return _browserViewController != nil;
+}
+
+// Browser sessions and collapsed panes both hide the terminal views; every visibility
+// decision that used to test isBrowser alone must test this instead.
+- (BOOL)terminalContentHidden {
+    return self.isBrowser || _collapsed;
 }
 
 - (void)setTerminalViewsHidden:(BOOL)hidden {
@@ -855,7 +867,7 @@ NSString *const SessionViewWasSelectedForInspectionNotification = @"SessionViewW
         iTermMetalClipView *metalClipView = (iTermMetalClipView *)_scrollview.contentView;
         metalClipView.useMetal = useMetal;
         // In browser mode, always keep legacy view hidden
-        _legacyView.hidden = !useMetal || self.isBrowser;
+        _legacyView.hidden = !useMetal || self.terminalContentHidden;
         
         [self updateLayout];
         [self setNeedsDisplay:YES];
@@ -1024,7 +1036,7 @@ NSString *const SessionViewWasSelectedForInspectionNotification = @"SessionViewW
     _metalView.paused = YES;
     _metalView.enableSetNeedsDisplay = NO;
     // In browser mode, keep metal view hidden
-    _metalView.hidden = self.isBrowser;
+    _metalView.hidden = self.terminalContentHidden;
     _metalView.alphaValue = 0;
 
     // Start the metal driver going. It will receive delegate calls from iTermMTKView that kick off
@@ -1086,7 +1098,7 @@ NSString *const SessionViewWasSelectedForInspectionNotification = @"SessionViewW
 
 - (void)updateImageAndBackgroundViewVisibility {
     // In browser mode, keep terminal views hidden
-    if (self.isBrowser) {
+    if (self.terminalContentHidden) {
         return;
     }
     
@@ -1809,6 +1821,40 @@ typedef NS_ENUM(NSInteger, SessionViewTrackingMode) {
     [self setFrameSize:_savedSize];
 }
 
+- (CGFloat)collapsedHeight {
+    return iTermGetSessionViewTitleHeight() + _progressBarHeight;
+}
+
+- (void)setCollapsed:(BOOL)collapsed {
+    if (collapsed == _collapsed) {
+        return;
+    }
+    _collapsed = collapsed;
+    DLog(@"setCollapsed:%@ for %@", @(collapsed), self);
+    _scrollview.hidden = collapsed;
+    if (collapsed) {
+        _legacyView.hidden = YES;
+        _metalView.hidden = YES;
+        _imageView.hidden = YES;
+        _backgroundColorView.hidden = YES;
+        _smearView.hidden = YES;
+        _legacyScrollerBackgroundView.hidden = YES;
+        _searchResultsMinimap.hidden = YES;
+        _marksMinimap.hidden = YES;
+    } else {
+        _legacyView.hidden = !_useMetal;
+        _metalView.hidden = NO;
+        _searchResultsMinimap.hidden = NO;
+        _marksMinimap.hidden = NO;
+        [self updateImageAndBackgroundViewVisibility];
+        [self updateMinimapFrameAnimated:NO];
+    }
+    _title.collapsed = collapsed;
+    [self updateLayout];
+    [self updateActivePaneBorder];
+    [self setNeedsDisplay:YES];
+}
+
 - (void)createSplitSelectionViewWithMode:(SplitSelectionViewMode)mode session:(id)session {
     id<SplitSelectionViewDelegate> delegate;
     switch (mode) {
@@ -1996,7 +2042,7 @@ typedef NS_ENUM(NSInteger, SessionViewTrackingMode) {
 
 - (void)setSuppressLegacyDrawing:(BOOL)suppressLegacyDrawing {
     // In browser mode, always keep legacy view hidden
-    _legacyView.hidden = suppressLegacyDrawing || self.isBrowser;
+    _legacyView.hidden = suppressLegacyDrawing || self.terminalContentHidden;
 }
 
 - (void)smearCursorFrom:(NSRect)from to:(NSRect)to color:(NSColor *)color {
@@ -2107,6 +2153,8 @@ typedef NS_ENUM(NSInteger, SessionViewTrackingMode) {
         _title.puaFontProvider = [_delegate sessionViewPUAFontProvider];
         [_title setDimmingAmount:[self adjustedDimmingAmount]];
         [_title updateLockButton];
+        _title.collapsed = _collapsed;
+        [_title updateCollapseButton];
         [self addSubviewBelowFindView:_title];
     } else {
         RLog(@"Adjust frame to eliminate title bar");
@@ -2443,6 +2491,10 @@ typedef NS_ENUM(NSInteger, SessionViewTrackingMode) {
 
 - (void)updateScrollViewFrame {
     DLog(@"update scrollview frame");
+    if (_collapsed) {
+        // The scroll view keeps its expanded frame (hidden) so the grid is never refit.
+        return;
+    }
     CGFloat titleHeight = _showTitle ? _title.frame.size.height : 0;
     CGFloat toolbarHeight = [self toolbarReservedHeight];
     CGFloat reservedSpaceOnBottom = _showBottomStatusBar ? iTermGetStatusBarHeight() : 0;
@@ -2511,8 +2563,8 @@ typedef NS_OPTIONS(NSUInteger, iTermCornerFlags) {
         return 0;
     }
 
-    // Get the border view's frame (scrollview or browser view) in window coordinates
-    NSRect borderFrame = self.isBrowser ? _browserViewController.view.frame : _scrollview.frame;
+    // Get the border view's frame (scrollview, browser view or collapsed strip) in window coordinates
+    NSRect borderFrame = [self activePaneBorderFrame];
     NSRect frameInWindow = [self convertRect:borderFrame toView:nil];
 
     // Get window content bounds
@@ -2577,6 +2629,16 @@ typedef NS_OPTIONS(NSUInteger, iTermCornerFlags) {
     return 0; // Fallback to square corners until detection completes
 }
 
+- (NSRect)activePaneBorderFrame {
+    if (self.isBrowser) {
+        return _browserViewController.view.frame;
+    }
+    if (_collapsed) {
+        return self.bounds;
+    }
+    return _scrollview.frame;
+}
+
 - (void)updateActivePaneBorder {
     const BOOL isActiveSession = [_delegate sessionViewIsActiveSession];
     const BOOL shouldShow = ([_delegate sessionViewUseActivePaneBorder] && isActiveSession);
@@ -2601,12 +2663,7 @@ typedef NS_OPTIONS(NSUInteger, iTermCornerFlags) {
     }
     _activePaneBorderView.borderColor = borderColor;
 
-    // Use the appropriate content frame based on session type
-    if (self.isBrowser) {
-        _activePaneBorderView.frame = _browserViewController.view.frame;
-    } else {
-        _activePaneBorderView.frame = _scrollview.frame;
-    }
+    _activePaneBorderView.frame = [self activePaneBorderFrame];
 
     // Get corner radius and which corners should be rounded
     const CGFloat radius = [self windowCornerRadiusForActiveBorder];
@@ -2634,7 +2691,7 @@ typedef NS_OPTIONS(NSUInteger, iTermCornerFlags) {
         return;
     }
     // In browser mode, minimaps should stay hidden
-    if (self.isBrowser) {
+    if (self.terminalContentHidden) {
         return;
     }
     NSRect frame = [self convertRect:_scrollview.verticalScroller.bounds
@@ -2719,6 +2776,14 @@ typedef NS_OPTIONS(NSUInteger, iTermCornerFlags) {
 
 - (void)sessionTitleViewToggleLock {
     [_delegate sessionViewToggleLock];
+}
+
+- (BOOL)sessionTitleViewCanCollapse {
+    return [_delegate sessionViewCanCollapse];
+}
+
+- (void)sessionTitleViewToggleCollapse {
+    [_delegate sessionViewToggleCollapse];
 }
 
 - (void)addAnnouncement:(iTermAnnouncementViewController *)announcement {
