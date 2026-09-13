@@ -301,6 +301,7 @@ const int kMaxSelectedTextLengthForCustomActions = 400;
     }
     if ([item action] == @selector(toggleBroadcastingInput:) ||
         [item action] == @selector(toggleLock:) ||
+        [item action] == @selector(collapsePane:) ||
         [item action] == @selector(lockAllInTab:) ||
         [item action] == @selector(unlockAllInTab:) ||
         [item action] == @selector(editTextViewSession:) ||
@@ -677,6 +678,15 @@ const int kMaxSelectedTextLengthForCustomActions = 400;
 
     // Toggle broadcast
     add(@"Toggle Broadcasting Input", @selector(toggleBroadcastingInput:));
+
+    // Collapse pane (only where it reclaims space; the text view of a collapsed pane is hidden, so this is never an Expand item)
+    if ([self.delegate contextMenuCanCollapsePane:self]) {
+        NSMenuItem *collapseItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"ContextMenu.CollapsePane", nil, [NSBundle mainBundle], @"Collapse Pane", @"Context menu item to collapse the pane to its title bar")
+                                                              action:@selector(collapsePane:)
+                                                       keyEquivalent:@""];
+        collapseItem.target = self;
+        [theMenu addItem:collapseItem];
+    }
 
     // Lock pane
     {
@@ -1305,6 +1315,10 @@ const int kMaxSelectedTextLengthForCustomActions = 400;
 
 - (void)toggleLock:(id)sender {
     [self.delegate contextMenuToggleLock:self];
+}
+
+- (void)collapsePane:(id)sender {
+    [self.delegate contextMenuCollapsePane:self];
 }
 
 - (void)lockAllInTab:(id)sender {

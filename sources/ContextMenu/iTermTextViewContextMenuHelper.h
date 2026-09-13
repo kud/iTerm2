@@ -103,6 +103,8 @@ hasOpenAnnotationInRange:(VT100GridCoordRange)coordRange;
 - (void)contextMenuToggleBroadcastingInput:(iTermTextViewContextMenuHelper *)contextMenu;
 - (void)contextMenuToggleLock:(iTermTextViewContextMenuHelper *)contextMenu;
 - (BOOL)contextMenuIsLocked:(iTermTextViewContextMenuHelper *)contextMenu;
+- (BOOL)contextMenuCanCollapsePane:(iTermTextViewContextMenuHelper *)contextMenu;
+- (void)contextMenuCollapsePane:(iTermTextViewContextMenuHelper *)contextMenu;
 // YES when the window's layout is locked (see -[PseudoTerminal toggleLayoutLocked:]).
 - (BOOL)contextMenuWindowIsLayoutLocked:(iTermTextViewContextMenuHelper *)contextMenu;
 - (void)contextMenuLockAllInTab:(iTermTextViewContextMenuHelper *)contextMenu;

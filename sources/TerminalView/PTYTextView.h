@@ -142,6 +142,8 @@ extern const CGFloat PTYTextViewMarginClickGraceWidth;
 // YES when the enclosing window's layout is locked.
 - (BOOL)textViewWindowIsLayoutLocked;
 - (void)textViewToggleLock;
+- (BOOL)textViewCanCollapsePane;
+- (void)textViewCollapsePane;
 - (void)textViewLockAllInTab;
 - (void)textViewUnlockAllInTab;
 - (BOOL)textViewAreAllPanesInTabLocked;

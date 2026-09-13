@@ -7443,6 +7443,17 @@ typedef struct {
     return (splitView.isVertical ? NSWidth(splitView.frame) : NSHeight(splitView.frame)) - dividers;
 }
 
+// -adjustSubviews only redistributes when the split's own frame changed; the
+// delegate sizing that pins a collapsed pane runs from here.
+- (void)relayoutSplitView:(NSSplitView *)splitView {
+    if (!splitView) {
+        return;
+    }
+    if (![self resizeSubviewsOfSplitView:splitView oldSize:splitView.frame.size respectPinning:YES]) {
+        [self resizeSubviewsOfSplitView:splitView oldSize:splitView.frame.size respectPinning:NO];
+    }
+}
+
 - (void)collapseSession:(PTYSession *)session {
     if (session.view.isCollapsed || ![self canCollapseSession:session]) {
         return;
@@ -7453,7 +7464,7 @@ typedef struct {
     session.view.expandedFraction = available > 0 ? NSHeight(session.view.frame) / available : 0;
     session.view.collapsed = YES;
     [self updatePaneTitles];
-    [parent adjustSubviews];
+    [self relayoutSplitView:parent];
     [self _splitViewDidResizeSubviews:parent];
     [self updateSessionOrdinals];
     [realParentWindow_ invalidateRestorableState];
@@ -7470,7 +7481,7 @@ typedef struct {
         [self restoreExpandedHeightOfSessionView:session.view inSplitView:parent];
     }
     [self updatePaneTitles];
-    [parent adjustSubviews];
+    [self relayoutSplitView:parent];
     [self _splitViewDidResizeSubviews:parent];
     [self updateSessionOrdinals];
     [realParentWindow_ invalidateRestorableState];
