@@ -13546,6 +13546,14 @@ typedef NS_ENUM(NSUInteger, PTYSessionTmuxReport) {
     self.locked = !_locked;
 }
 
+- (BOOL)textViewCanCollapsePane {
+    return !_view.isCollapsed && [_delegate sessionCanCollapse:self];
+}
+
+- (void)textViewCollapsePane {
+    [self toggleCollapse];
+}
+
 - (void)toggleCollapse {
     const BOOL wasActive = [_delegate sessionIsActiveInTab:self];
     [_delegate sessionToggleCollapse:self];

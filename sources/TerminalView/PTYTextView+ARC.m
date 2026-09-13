@@ -1856,6 +1856,14 @@ hasOpenAnnotationInRange:(VT100GridCoordRange)coordRange {
     return [self.delegate textViewIsLocked];
 }
 
+- (BOOL)contextMenuCanCollapsePane:(iTermTextViewContextMenuHelper *)contextMenu {
+    return [self.delegate textViewCanCollapsePane];
+}
+
+- (void)contextMenuCollapsePane:(iTermTextViewContextMenuHelper *)contextMenu {
+    [self.delegate textViewCollapsePane];
+}
+
 - (BOOL)contextMenuWindowIsLayoutLocked:(iTermTextViewContextMenuHelper *)contextMenu {
     return [self.delegate textViewWindowIsLayoutLocked];
 }
