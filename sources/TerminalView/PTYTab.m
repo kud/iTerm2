@@ -7454,6 +7454,46 @@ typedef struct {
     }
 }
 
+// Run the delegate sizing, then animate the subviews from where they were to where it
+// put them. The grids are refit once, at the end, so the terminals reflow exactly once.
+- (void)animateRelayoutOfSplitView:(NSSplitView *)splitView prepare:(void (^)(void))prepare {
+    if (!splitView) {
+        return;
+    }
+    NSArray<NSView *> *subviews = [splitView.subviews copy];
+    NSArray<NSValue *> *before = [subviews mapWithBlock:^id(NSView *view) {
+        return [NSValue valueWithRect:view.frame];
+    }];
+    if (prepare) {
+        prepare();
+    }
+    [self relayoutSplitView:splitView];
+    NSArray<NSValue *> *after = [subviews mapWithBlock:^id(NSView *view) {
+        return [NSValue valueWithRect:view.frame];
+    }];
+    const BOOL reduceMotion = [[NSWorkspace sharedWorkspace] accessibilityDisplayShouldReduceMotion];
+    if (reduceMotion || [before isEqualToArray:after]) {
+        [self _splitViewDidResizeSubviews:splitView];
+        return;
+    }
+    [subviews enumerateObjectsUsingBlock:^(NSView *view, NSUInteger i, BOOL *stop) {
+        view.frame = before[i].rectValue;
+    }];
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+        context.duration = 0.2;
+        context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        [subviews enumerateObjectsUsingBlock:^(NSView *view, NSUInteger i, BOOL *stop) {
+            [view.animator setFrame:after[i].rectValue];
+        }];
+    } completionHandler:^{
+        [subviews enumerateObjectsUsingBlock:^(NSView *view, NSUInteger i, BOOL *stop) {
+            view.frame = after[i].rectValue;
+        }];
+        [self _splitViewDidResizeSubviews:splitView];
+        [self updateUseMetal];
+    }];
+}
+
 - (void)collapseSession:(PTYSession *)session {
     if (session.view.isCollapsed || ![self canCollapseSession:session]) {
         return;
@@ -7464,8 +7504,7 @@ typedef struct {
     session.view.expandedFraction = available > 0 ? NSHeight(session.view.frame) / available : 0;
     session.view.collapsed = YES;
     [self updatePaneTitles];
-    [self relayoutSplitView:parent];
-    [self _splitViewDidResizeSubviews:parent];
+    [self animateRelayoutOfSplitView:parent prepare:nil];
     [self updateSessionOrdinals];
     [realParentWindow_ invalidateRestorableState];
 }
@@ -7477,12 +7516,13 @@ typedef struct {
     DLog(@"expandSession:%@", session);
     PTYSplitView *parent = [PTYSplitView castFrom:session.view.superview];
     session.view.collapsed = NO;
-    if (parent && !parent.isVertical) {
-        [self restoreExpandedHeightOfSessionView:session.view inSplitView:parent];
-    }
     [self updatePaneTitles];
-    [self relayoutSplitView:parent];
-    [self _splitViewDidResizeSubviews:parent];
+    __weak __typeof(self) weakSelf = self;
+    [self animateRelayoutOfSplitView:parent prepare:^{
+        if (parent && !parent.isVertical) {
+            [weakSelf restoreExpandedHeightOfSessionView:session.view inSplitView:parent];
+        }
+    }];
     [self updateSessionOrdinals];
     [realParentWindow_ invalidateRestorableState];
 }

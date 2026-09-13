@@ -1780,6 +1780,15 @@ typedef NS_ENUM(NSInteger, SessionViewTrackingMode) {
     [self setFrameSize:_savedSize];
 }
 
+// The terminal's own background views are hidden while collapsed, so the strip paints
+// the profile background itself; otherwise the window shows through under the title bar.
+- (void)drawRect:(NSRect)dirtyRect {
+    if (_collapsed && _terminalBackgroundColor) {
+        [_terminalBackgroundColor set];
+        NSRectFill(dirtyRect);
+    }
+}
+
 - (CGFloat)collapsedHeight {
     return iTermGetSessionViewTitleHeight() + _progressBarHeight;
 }
