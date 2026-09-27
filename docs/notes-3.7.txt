@@ -249,6 +249,10 @@ New Features:
   set_status.
 
 Improvements:
+- The copy and fold buttons beside a command,
+  and a folded line’s placeholder, now show the
+  pointing-hand cursor instead of the arrow, since
+  a plain click activates them.
 - iTerm2 now recognizes when a terminal is
   running on your own Mac by machine identity
   rather than by hostname, so features that only

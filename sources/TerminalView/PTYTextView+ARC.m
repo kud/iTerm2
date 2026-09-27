@@ -762,10 +762,10 @@ iTermCommandInfoViewControllerDelegate>
         changed = [self setCursor:[NSCursor arrowCursor]];
     } else if ([self mouseIsOverButtonInEvent:event]) {
         DLog(@"Mouse is over a button");
-        changed = [self setCursor:[NSCursor arrowCursor]];
+        changed = [self setCursor:[NSCursor pointingHandCursor]];
     } else if ([self mouseIsOverFoldAffordanceInEvent:event]) {
         DLog(@"Mouse is over a fold affordance");
-        changed = [self setCursor:[NSCursor arrowCursor]];
+        changed = [self setCursor:[NSCursor pointingHandCursor]];
     } else {
         changed = [self setCursor:self.delegate.textViewDefaultPointer ?: [iTermMouseCursor mouseCursorOfType:iTermMouseCursorTypeIBeam]];
     }
@@ -798,7 +798,7 @@ iTermCommandInfoViewControllerDelegate>
         return YES;
     }
     // Click anywhere on a folded line’s placeholder also unfolds — show the
-    // arrow cursor over the whole line so the affordance is discoverable.
+    // pointing-hand cursor over the whole line so the affordance is discoverable.
     const NSPoint pointInSelf = [self convertPoint:event.locationInWindow fromView:nil];
     const VT100GridCoord coord = [self coordForPoint:pointInSelf allowRightMarginOverflow:NO];
     if (coord.y >= 0 &&
