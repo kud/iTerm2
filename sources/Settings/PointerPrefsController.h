@@ -90,4 +90,10 @@ extern NSString *kForceTouchSingleClick;
 - (IBAction)clicksChanged:(id)sender;
 - (IBAction)loadDefaults:(id)sender;
 
+// Points the controller at a code-built table, replacing the nib-loaded one.
+- (void)setTableView:(NSTableView *)tableView
+        buttonColumn:(NSTableColumn *)buttonColumn
+        actionColumn:(NSTableColumn *)actionColumn
+        removeButton:(NSButton *)removeButton;
+
 @end

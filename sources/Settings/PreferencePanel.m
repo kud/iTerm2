@@ -86,6 +86,7 @@
 #import "NSWindow+iTerm.h"
 #import "PTYSession.h"
 #import "PasteboardHistory.h"
+#import "PointerPreferencesViewController.h"
 #import "PointerPrefsController.h"
 #import "ProfileModel.h"
 #import "ProfilePreferencesViewController.h"
@@ -571,6 +572,10 @@ static iTermPreferencesSearchEngine *gSearchEngine;
     return NO;
 }
 
+- (PointerPreferencesViewController * _Nullable)pointerViewController {
+    return _pointerViewController;
+}
+
 #pragma mark - View layout
 
 - (void)awakeFromNib {
@@ -601,6 +606,7 @@ static iTermPreferencesSearchEngine *gSearchEngine;
     _appearanceTabViewItem.view = _appearancePreferencesViewController.view;
     _keyboardTabViewItem.view = _keysViewController.view;
     _arrangementsTabViewItem.view = arrangements_.view;
+    [_pointerViewController loadViewInCodeIfEnabled];
     _mouseTabViewItem.view = _pointerViewController.view;
     _advancedTabViewItem.view = _advancedViewController.view;
     _shortcutsTabViewItem.view = _shortcutsViewController.view;

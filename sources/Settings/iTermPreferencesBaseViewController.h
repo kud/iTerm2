@@ -13,6 +13,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface iTermPreferencesInnerTabContainerView : NSView
+@end
+
 @protocol iTermPreferencePanelSizing<NSObject>
 - (CGFloat)preferencePanelMinimumWidth;
 @end

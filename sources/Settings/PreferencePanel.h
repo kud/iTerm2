@@ -60,6 +60,7 @@ CGFloat iTermPreferencePanelGetWindowMinimumWidth(BOOL session);
 @class iTermShortcutInputView;
 @protocol iTermSessionScope;
 @class iTermSetting;
+@class PointerPreferencesViewController;
 @class PreferenceInfo;
 @class SmartSelectionController;
 @class TriggerController;
@@ -106,6 +107,8 @@ void LoadPrefsFromCustomFolder(void);
 - (IBAction)showMouseTabView:(id _Nullable)sender;
 
 - (void)underlyingProfileDidChange;
+
+- (PointerPreferencesViewController * _Nullable)pointerViewController;
 
 - (WindowArrangements *)arrangements;
 - (void)run;

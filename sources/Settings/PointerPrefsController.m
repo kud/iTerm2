@@ -654,6 +654,21 @@ typedef enum {
     return keys;
 }
 
+- (void)setTableView:(NSTableView *)tableView
+        buttonColumn:(NSTableColumn *)buttonColumn
+        actionColumn:(NSTableColumn *)actionColumn
+        removeButton:(NSButton *)removeButton {
+    tableView_.delegate = nil;
+    tableView_.dataSource = nil;
+    tableView_ = tableView;
+    buttonColumn_ = buttonColumn;
+    actionColumn_ = actionColumn;
+    remove_ = removeButton;
+    [tableView_ setDoubleAction:@selector(tableViewRowDoubleClicked:)];
+    [tableView_ setTarget:self];
+    self.hasSelection = tableView_.numberOfSelectedRows > 0;
+}
+
 - (void)awakeFromNib
 {
     [tableView_ setDoubleAction:@selector(tableViewRowDoubleClicked:)];

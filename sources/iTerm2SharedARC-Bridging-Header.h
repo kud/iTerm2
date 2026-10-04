@@ -29,6 +29,8 @@
 #import "PTYTab.h"
 #import "PTYWindow.h"
 #import "PreferencePanel.h"
+#import "PointerPreferencesViewController.h"
+#import "PointerPrefsController.h"
 #import "ThreeFingerTapGestureRecognizer.h"
 #import "WindowControllerInterface.h"
 #import "PseudoTerminal.h"

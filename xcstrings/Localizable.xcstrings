@@ -126030,6 +126030,846 @@
         }
       }
     },
+    "PointerPreferences.ActionColumnHeader" : {
+      "comment" : "Column header in Settings > Pointer > Bindings: the action a binding performs",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktion"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Action"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクション"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ação"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Действие"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作"
+          }
+        }
+      }
+    },
+    "PointerPreferences.BindingsTab" : {
+      "comment" : "Name of the Bindings tab in Settings > Pointer, which lists actions bound to mouse buttons and gestures",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuordnungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Bindings"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バインディング"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Associações"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Привязки"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "绑定"
+          }
+        }
+      }
+    },
+    "PointerPreferences.ButtonColumnHeader" : {
+      "comment" : "Column header in Settings > Pointer > Bindings: the mouse button or trackpad gesture a binding responds to",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maustaste/Trackpad-Geste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Mouse Button/Trackpad Gesture"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウスボタン/トラックパッドジェスチャー"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Botão do mouse/gesto do trackpad"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кнопка мыши/жест трекпада"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鼠标按键/触控板手势"
+          }
+        }
+      }
+    },
+    "PointerPreferences.ClicksLabel" : {
+      "comment" : "Section label in Settings > Pointer > General, to the left of the click settings",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicks:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Clicks:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリック:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliques:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клики:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点按："
+          }
+        }
+      }
+    },
+    "PointerPreferences.CmdClickOpensFilenameOrURL" : {
+      "comment" : "Checkbox in Settings > Pointer > General: command-click opens the filename or URL under the pointer",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌘-Klick öffnet Dateiname/URL (semantischer Verlauf)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "⌘-Click opens filename/URL (semantic history)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌘クリックでファイル名/URLを開く（セマンティック履歴）"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌘-Clique abre nome de arquivo/URL (Semantic History)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌘-клик открывает имя файла/URL (семантическая история)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌘-点按打开文件名/URL（语义历史记录）"
+          }
+        }
+      }
+    },
+    "PointerPreferences.ControlClickReportedToApps" : {
+      "comment" : "Checkbox in Settings > Pointer > General: control-click is sent to apps instead of opening the context menu",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^-Klick wird an Apps gemeldet, öffnet kein Menü"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "^-Click reported to apps, does not open menu"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^クリックはアプリに報告され、メニューは開きません"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^-Clique relatado aos apps, não abre o menu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^-клик передаётся приложениям, меню не открывается"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^-点按报告给应用，不打开菜单"
+          }
+        }
+      }
+    },
+    "PointerPreferences.ControlClickReportedToAppsToolTip" : {
+      "comment" : "Tooltip for the control-click mouse reporting checkbox in Settings > Pointer",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei Terminalanwendungen, die Mausberichte verwenden, ermöglicht diese Option, dass ein Control-Klick gemeldet wird, anstatt das Kontextmenü zu öffnen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "For terminal applications that use mouse reporting, turning this on allows control-click to be reported instead of opening the context menu."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウスレポートを使用するターミナルアプリケーションでは、これをオンにするとコンテキストメニューを開く代わりにコントロールクリックが報告されるようになります。"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para aplicativos de terminal que usam relato de mouse, ativar isto permite que o clique com Control seja relatado em vez de abrir o menu de contexto."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для терминальных приложений, использующих отчёты о мыши, включение этой опции позволяет передавать control-клик приложению вместо открытия контекстного меню."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对于使用鼠标报告的终端应用，开启此选项后，控制点按会被报告给应用，而不是打开上下文菜单。"
+          }
+        }
+      }
+    },
+    "PointerPreferences.FocusFollowsMouse" : {
+      "comment" : "Checkbox in Settings > Pointer > General: keyboard focus follows the mouse pointer",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus folgt der Maus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Focus follows mouse"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウスに追従してフォーカスする"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foco segue o mouse"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фокус следует за мышью"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "焦点跟随鼠标"
+          }
+        }
+      }
+    },
+    "PointerPreferences.FocusLabel" : {
+      "comment" : "Section label in Settings > Pointer > General, to the left of the focus settings",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fokus:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Focus:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォーカス:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foco:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фокус:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "焦点："
+          }
+        }
+      }
+    },
+    "PointerPreferences.FocusWindowAfterRightOrMiddleClick" : {
+      "comment" : "Checkbox in Settings > Pointer > General: right or middle click also focuses the window",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenster nach Rechts- oder Mittelklick fokussieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Focus window after right or middle click"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右クリックまたは中クリック後にウィンドウをフォーカス"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focar a janela após clique com o botão direito ou do meio"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фокусировать окно после щелчка правой или средней кнопкой мыши"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右键或中键点按后聚焦窗口"
+          }
+        }
+      }
+    },
+    "PointerPreferences.GeneralTab" : {
+      "comment" : "Name of the General tab in Settings > Pointer",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allgemein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "General"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geral"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Общие"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通用"
+          }
+        }
+      }
+    },
+    "PointerPreferences.LoadDefaults" : {
+      "comment" : "Button in Settings > Pointer > Bindings that restores the default pointer bindings",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standardwerte laden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Load Defaults"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "既定値を読み込む"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar padrões"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Значения по умолчанию"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "载入默认值"
+          }
+        }
+      }
+    },
+    "PointerPreferences.MouseReportingLabel" : {
+      "comment" : "Section label in Settings > Pointer > General, to the left of the mouse reporting settings",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maus-Reporting:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Mouse Reporting:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウスレポート:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relatório do mouse:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправка событий мыши:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鼠标报告："
+          }
+        }
+      }
+    },
+    "PointerPreferences.MouseReportingSupportsHorizontalScrolling" : {
+      "comment" : "Checkbox in Settings > Pointer > General: horizontal scroll events are reported to apps that use mouse reporting",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maus-Reporting unterstützt horizontales Scrollen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Mouse reporting supports horizontal scrolling"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウスレポートは水平スクロールをサポートする"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O relatório do mouse é compatível com rolagem horizontal"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Передача событий мыши поддерживает горизонтальную прокрутку"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鼠标报告支持水平滚动"
+          }
+        }
+      }
+    },
+    "PointerPreferences.MouseReportingSupportsHorizontalScrollingToolTip" : {
+      "comment" : "Tooltip for the horizontal scrolling mouse reporting checkbox in Settings > Pointer",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn aktiviert, hat die Mausberichterstattung Vorrang vor dem Wischen zum Wechseln der Tabs. Deaktivieren Sie dies, wenn das Wischen zum Wechseln der Tabs manchmal nicht funktioniert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "When enabled, mouse reporting takes priority over swipe to switch tabs. Disable this if swiping to switch tabs sometimes doesn’t work."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効にすると、マウスレポートがタブを切り替えるスワイプよりも優先されます。タブ切り替えのスワイプが時々効かない場合はこれを無効にしてください。"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando ativado, o relato de mouse tem prioridade sobre o deslizar para trocar de aba. Desative isto se o deslizar para trocar de aba às vezes não funcionar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если включено, отчёты о мыши имеют приоритет над свайпом для переключения вкладок. Отключите этот параметр, если свайп для переключения вкладок иногда не работает."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用后，鼠标报告优先于滑动切换标签页。如果滑动切换标签页有时不生效，请关闭此选项。"
+          }
+        }
+      }
+    },
+    "PointerPreferences.OptionClickMovesCursor" : {
+      "comment" : "Checkbox in Settings > Pointer > General: option-click moves the text cursor",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌥-Klick verschiebt den Cursor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "⌥-Click moves cursor"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌥クリックでカーソルを移動"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌥-Clique move o cursor"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌥-клик перемещает курсор"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌥-点按移动光标"
+          }
+        }
+      }
+    },
+    "PointerPreferences.OptionClickMovesCursorToolTip" : {
+      "comment" : "Tooltip for the “⌥-Click moves cursor” checkbox in Settings > Pointer",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn aktiviert, sendet ein Option-Klick Pfeiltasten, um die Cursorposition zu verschieben. Wenn Shell Integration installiert ist, wirkt sich dies nicht auf die Befehlszeile aus."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "If enabled, option-click sends arrow keys to move the cursor's position. If Shell Integration is installed then it does not take effect at the command line."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効にすると、オプションクリックでカーソル位置を移動する矢印キーが送信されます。シェル統合がインストールされている場合、コマンドラインでは効果がありません。"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se ativado, o Option-clique envia as teclas de seta para mover a posição do cursor. Se a Shell Integration estiver instalada, isto não terá efeito na linha de comando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если включено, option-клик отправляет клавиши со стрелками для перемещения курсора. Если установлена Интеграция с оболочкой, это не действует в командной строке."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用后，Option-点按会发送方向键来移动光标位置。如果安装了 Shell 集成，则在命令行中不生效。"
+          }
+        }
+      }
+    },
+    "PointerPreferences.RightClickReportedToApps" : {
+      "comment" : "Checkbox in Settings > Pointer > General: right click is sent to apps instead of opening the context menu",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechtsklick wird an Apps gemeldet, öffnet kein Menü"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Right click reported to apps, does not open menu"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右クリックはアプリに報告され、メニューは開かない"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique direito é reportado aos apps, não abre o menu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Правый клик передаётся приложениям, не открывает меню"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右键点按报告给应用，不打开菜单"
+          }
+        }
+      }
+    },
+    "PointerPreferences.RightClickReportedToAppsToolTip" : {
+      "comment" : "Tooltip for the right-click mouse reporting checkbox in Settings > Pointer",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei Terminalanwendungen, die Mausberichte verwenden, ermöglicht diese Option, dass ein Rechtsklick (oder ein Zwei-Finger-Tipp auf einem Trackpad) gemeldet wird, anstatt das Kontextmenü zu öffnen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "For terminal applications that use mouse reporting, turning this on allows right click (or two finger tap on a trackpad) to be reported instead of opening the context menu."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウスレポートを使用するターミナルアプリケーションの場合、これをオンにすると、コンテキストメニューを開く代わりに右クリック（またはトラックパッドの2本指タップ）を報告できるようになります。"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para aplicativos de terminal que usam relatório de mouse, ativar isto permite que o clique com o botão direito (ou o toque com dois dedos no trackpad) seja relatado em vez de abrir o menu de contexto."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для приложений терминала, использующих отчёты о мыши, включение этого параметра позволяет сообщать о щелчке правой кнопкой (или касании двумя пальцами трекпада) вместо открытия контекстного меню."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对于使用鼠标报告的终端应用，开启此选项后，右键点按（或触控板双指轻点）会被报告给应用，而不是打开上下文菜单。"
+          }
+        }
+      }
+    },
+    "PointerPreferences.ThreeFingerTapEmulatesMiddleClick" : {
+      "comment" : "Checkbox in Settings > Pointer > General: a three-finger tap acts as a middle click",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dreifingertipp emuliert mittleren Klick"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Three-finger tap emulates middle click"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3本指タップで中クリックをエミュレートする"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque com três dedos emula clique do meio"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тап тремя пальцами эмулирует клик средней кнопкой"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "三指轻点模拟中键点按"
+          }
+        }
+      }
+    },
     "PointerPrefs.ActionCopyLinkAddress" : {
       "comment" : "Pointer action name",
       "extractionState" : "extracted_with_value",

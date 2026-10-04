@@ -1,0 +1,122 @@
+[
+  {
+    "from": "6408.title",
+    "to": "PointerPreferences.OptionClickMovesCursor",
+    "comment": "Checkbox in Settings > Pointer > General: option-click moves the text cursor",
+    "english": "⌥-Click moves cursor"
+  },
+  {
+    "from": "6407.ibShadowedToolTip",
+    "to": "PointerPreferences.OptionClickMovesCursorToolTip",
+    "comment": "Tooltip for the “⌥-Click moves cursor” checkbox in Settings > Pointer",
+    "english": "If enabled, option-click sends arrow keys to move the cursor's position. If Shell Integration is installed then it does not take effect at the command line."
+  },
+  {
+    "from": "6228.title",
+    "to": "PointerPreferences.ThreeFingerTapEmulatesMiddleClick",
+    "comment": "Checkbox in Settings > Pointer > General: a three-finger tap acts as a middle click",
+    "english": "Three-finger tap emulates middle click"
+  },
+  {
+    "from": "6108.title",
+    "to": "PointerPreferences.CmdClickOpensFilenameOrURL",
+    "comment": "Checkbox in Settings > Pointer > General: command-click opens the filename or URL under the pointer",
+    "english": "⌘-Click opens filename/URL (semantic history)"
+  },
+  {
+    "from": "6071.title",
+    "to": "PointerPreferences.FocusFollowsMouse",
+    "comment": "Checkbox in Settings > Pointer > General: keyboard focus follows the mouse pointer",
+    "english": "Focus follows mouse"
+  },
+  {
+    "from": "3Y4-p9-liW.title",
+    "to": "PointerPreferences.FocusWindowAfterRightOrMiddleClick",
+    "comment": "Checkbox in Settings > Pointer > General: right or middle click also focuses the window",
+    "english": "Focus window after right or middle click"
+  },
+  {
+    "from": "hWJ-Ek-z7b.title",
+    "to": "PointerPreferences.MouseReportingSupportsHorizontalScrolling",
+    "comment": "Checkbox in Settings > Pointer > General: horizontal scroll events are reported to apps that use mouse reporting",
+    "english": "Mouse reporting supports horizontal scrolling"
+  },
+  {
+    "from": "cgK-BO-rKa.ibShadowedToolTip",
+    "to": "PointerPreferences.MouseReportingSupportsHorizontalScrollingToolTip",
+    "comment": "Tooltip for the horizontal scrolling mouse reporting checkbox in Settings > Pointer",
+    "english": "When enabled, mouse reporting takes priority over swipe to switch tabs. Disable this if swiping to switch tabs sometimes doesn’t work."
+  },
+  {
+    "from": "axW-bU-qkO.title",
+    "to": "PointerPreferences.ClicksLabel",
+    "comment": "Section label in Settings > Pointer > General, to the left of the click settings",
+    "english": "Clicks:"
+  },
+  {
+    "from": "f01-4b-exO.title",
+    "to": "PointerPreferences.FocusLabel",
+    "comment": "Section label in Settings > Pointer > General, to the left of the focus settings",
+    "english": "Focus:"
+  },
+  {
+    "from": "8aJ-vw-hMr.title",
+    "to": "PointerPreferences.MouseReportingLabel",
+    "comment": "Section label in Settings > Pointer > General, to the left of the mouse reporting settings",
+    "english": "Mouse Reporting:"
+  },
+  {
+    "from": "6112.title",
+    "to": "PointerPreferences.ControlClickReportedToApps",
+    "comment": "Checkbox in Settings > Pointer > General: control-click is sent to apps instead of opening the context menu",
+    "english": "^-Click reported to apps, does not open menu"
+  },
+  {
+    "from": "6111.ibShadowedToolTip",
+    "to": "PointerPreferences.ControlClickReportedToAppsToolTip",
+    "comment": "Tooltip for the control-click mouse reporting checkbox in Settings > Pointer",
+    "english": "For terminal applications that use mouse reporting, turning this on allows control-click to be reported instead of opening the context menu."
+  },
+  {
+    "from": "iBA-fC-cDp.title",
+    "to": "PointerPreferences.RightClickReportedToApps",
+    "comment": "Checkbox in Settings > Pointer > General: right click is sent to apps instead of opening the context menu",
+    "english": "Right click reported to apps, does not open menu"
+  },
+  {
+    "from": "ZG1-dm-1gD.ibShadowedToolTip",
+    "to": "PointerPreferences.RightClickReportedToAppsToolTip",
+    "comment": "Tooltip for the right-click mouse reporting checkbox in Settings > Pointer",
+    "english": "For terminal applications that use mouse reporting, turning this on allows right click (or two finger tap on a trackpad) to be reported instead of opening the context menu."
+  },
+  {
+    "from": "H6p-WE-6DF.label",
+    "to": "PointerPreferences.GeneralTab",
+    "comment": "Name of the General tab in Settings > Pointer",
+    "english": "General"
+  },
+  {
+    "from": "FxS-Eb-dxA.label",
+    "to": "PointerPreferences.BindingsTab",
+    "comment": "Name of the Bindings tab in Settings > Pointer, which lists actions bound to mouse buttons and gestures",
+    "english": "Bindings"
+  },
+  {
+    "from": "6099.headerCell.title",
+    "to": "PointerPreferences.ActionColumnHeader",
+    "comment": "Column header in Settings > Pointer > Bindings: the action a binding performs",
+    "english": "Action"
+  },
+  {
+    "from": "6095.headerCell.title",
+    "to": "PointerPreferences.ButtonColumnHeader",
+    "comment": "Column header in Settings > Pointer > Bindings: the mouse button or trackpad gesture a binding responds to",
+    "english": "Mouse Button/Trackpad Gesture"
+  },
+  {
+    "from": "6116.title",
+    "to": "PointerPreferences.LoadDefaults",
+    "comment": "Button in Settings > Pointer > Bindings that restores the default pointer bindings",
+    "english": "Load Defaults"
+  }
+]

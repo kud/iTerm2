@@ -1502,6 +1502,7 @@ CA
                 <outlet property="_focusFollowsMouse" destination="6062" id="wHi-NP-8ue"/>
                 <outlet property="_focusOnRightOrMiddleClick" destination="j6a-ag-jgf" id="m8S-Wq-a1R"/>
                 <outlet property="_optionClickMovesCursor" destination="6407" id="hKN-R0-UCE"/>
+                <outlet property="_pointerPrefsController" destination="6117" id="pPc-0w-l3t"/>
                 <outlet property="_reportHorizontalScrollEvents" destination="cgK-BO-rKa" id="13W-yw-YvC"/>
                 <outlet property="_rightClickActsLikeRightClick" destination="ZG1-dm-1gD" id="N8K-Uy-gd3"/>
                 <outlet property="_tabView" destination="kxy-pe-gzv" id="iKb-9p-k0h"/>

@@ -35,9 +35,6 @@
 }
 @end
 
-@interface iTermPreferencesInnerTabContainerView : NSView
-@end
-
 @implementation iTermPreferencesInnerTabContainerView
 @end
 
