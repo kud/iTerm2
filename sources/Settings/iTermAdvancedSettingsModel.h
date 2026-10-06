@@ -411,6 +411,7 @@ extern NSString *const iTermAdvancedSettingsDidChange;
 + (int)pinnedTabWidth;
 + (BOOL)pinchToChangeFontSizeDisabled;
 + (BOOL)placeTabsInTitlebarAccessoryInFullScreen;
++ (BOOL)pointingHandOverClickableButtons;
 + (BOOL)pollForTmuxForegroundJob;
 + (BOOL)postFakeFlagsChangedEvents;
 + (BOOL)preconvertStringsOnParserThread;

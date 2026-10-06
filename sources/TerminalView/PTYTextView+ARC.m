@@ -725,6 +725,9 @@ iTermCommandInfoViewControllerDelegate>
     NSString *hover = nil;
     VT100GridWindowedRange anchorRange = VT100GridWindowedRangeMake(VT100GridCoordRangeMake(-1, -1, -1, -1), -1, -1);
     BOOL changed = NO;
+    const BOOL pointingHand = [iTermAdvancedSettingsModel pointingHandOverClickableButtons];
+    NSCursor * const clickableCursor = pointingHand ? [NSCursor pointingHandCursor] : [NSCursor arrowCursor];
+    NSString * const clickableCursorName = pointingHand ? @"pointing hand" : @"arrow";
     if (([[iTermApplication sharedApplication] it_modifierFlags] & kDragPaneModifiers) == kDragPaneModifiers) {
         changed = [self setCursor:[NSCursor openHandCursor]];
     } else if (([[iTermApplication sharedApplication] it_modifierFlags] & kRectangularSelectionModifierMask) == kRectangularSelectionModifiers) {
@@ -761,11 +764,11 @@ iTermCommandInfoViewControllerDelegate>
     } else if ([self contextMenu:_contextMenuHelper offscreenCommandLineForClickAt:event.locationInWindow]) {
         changed = [self setCursor:[NSCursor arrowCursor]];
     } else if ([self mouseIsOverButtonInEvent:event]) {
-        DLog(@"Mouse is over a button");
-        changed = [self setCursor:[NSCursor pointingHandCursor]];
+        DLog(@"Mouse is over a button; pointingHand=%@, using %@ cursor", @(pointingHand), clickableCursorName);
+        changed = [self setCursor:clickableCursor];
     } else if ([self mouseIsOverFoldAffordanceInEvent:event]) {
-        DLog(@"Mouse is over a fold affordance");
-        changed = [self setCursor:[NSCursor pointingHandCursor]];
+        DLog(@"Mouse is over a fold affordance; pointingHand=%@, using %@ cursor", @(pointingHand), clickableCursorName);
+        changed = [self setCursor:clickableCursor];
     } else {
         changed = [self setCursor:self.delegate.textViewDefaultPointer ?: [iTermMouseCursor mouseCursorOfType:iTermMouseCursorTypeIBeam]];
     }
